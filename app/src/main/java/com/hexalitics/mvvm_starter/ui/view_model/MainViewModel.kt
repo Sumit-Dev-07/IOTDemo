@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import retrofit2.Response
+import java.net.InetAddress
 import javax.inject.Inject
 
 /**
@@ -31,6 +32,46 @@ class MainViewModel @Inject constructor(private val mainRepository: Repository) 
             if (response.isSuccessful) {
                 val storeResponse = response.body() as ResponseDataModel
                 emit(Resource.success(data = storeResponse))
+            } else {
+                withContext(Dispatchers.Main) {
+                    onResultError(response)?.let {
+                        emit(Resource.error(data = null, message = it))
+                    }
+                }
+            }
+        } catch (he: HttpException) {
+            emit(Resource.error(data = null, message = he.message!!))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message!!))
+        }
+
+    }
+
+    fun ledOn(ipAddress: String) = liveData(Dispatchers.IO) {
+        try {
+            val response = mainRepository.ledOn(ipAddress)
+            if (response.isSuccessful) {
+                emit(Resource.success(data = null))
+            } else {
+                withContext(Dispatchers.Main) {
+                    onResultError(response)?.let {
+                        emit(Resource.error(data = null, message = it))
+                    }
+                }
+            }
+        } catch (he: HttpException) {
+            emit(Resource.error(data = null, message = he.message!!))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message!!))
+        }
+
+    }
+
+    fun ledOff(ipAddress: String) = liveData(Dispatchers.IO) {
+        try {
+            val response = mainRepository.ledOff(ipAddress)
+            if (response.isSuccessful) {
+                emit(Resource.success(data = null))
             } else {
                 withContext(Dispatchers.Main) {
                     onResultError(response)?.let {

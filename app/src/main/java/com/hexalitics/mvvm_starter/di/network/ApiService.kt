@@ -10,4 +10,9 @@ interface ApiService {
     @GET("api")
     suspend fun getData(): Response<ResponseDataModel?>
 
+    @GET
+    suspend fun ledOn(@Url url : String ): Response<ResponseBody?>
+    @GET
+    suspend fun ledOff(@Url url : String ): Response<ResponseBody?>
+
 }

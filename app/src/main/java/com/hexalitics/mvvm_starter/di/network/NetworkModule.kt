@@ -42,7 +42,7 @@ object NetworkModule {
             }
             okHttpBuilder.addInterceptor(interceptor)
         }
-        okHttpBuilder.addInterceptor(noConnectionInterceptor)
+        //okHttpBuilder.addInterceptor(noConnectionInterceptor)
         /*okHttpBuilder.addInterceptor { chain ->
             val request = chain.request().newBuilder()
             request.addHeader("api-key", Constants.SERVER_API_KEY)

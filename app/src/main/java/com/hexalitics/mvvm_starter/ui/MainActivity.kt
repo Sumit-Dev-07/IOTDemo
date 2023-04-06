@@ -2,6 +2,9 @@ package com.hexalitics.mvvm_starter.ui
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.WIFI_SERVICE
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -19,6 +22,7 @@ class MainActivity : BaseActivity() {
     private val viewModel by viewModels<MainViewModel>()
     private lateinit var mContext: Context
     private var dialog: Dialog? = null
+    private var ipAddress : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +31,29 @@ class MainActivity : BaseActivity() {
         mContext = this
         dialog = Dialog(mContext)
         observeData()
-        getLink()
+        //getLink()
+
+        val wifiMan: WifiManager = this.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+        val wifiInf: WifiInfo = wifiMan.connectionInfo
+        val ipAddress = wifiInf.ipAddress
+        val ip = String.format(
+            "%d.%d.%d.%d",
+            ipAddress and 0xff,
+            ipAddress shr 8 and 0xff,
+            ipAddress shr 16 and 0xff,
+            ipAddress shr 24 and 0xff
+        )
+        this.ipAddress = ip
+        Toast.makeText(this, "----$ip", Toast.LENGTH_SHORT).show()
+
+        binding.btnOn.setOnClickListener {
+            ledOn()
+        }
+
+        binding.btnOff.setOnClickListener {
+            ledOff()
+        }
+
     }
 
     private fun observeData() {
@@ -68,4 +94,45 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
+    private fun ledOn() {
+        viewModel.ledOn(ipAddress).observe(this) {
+            it?.let { resource ->
+                when (resource.status) {
+                    Status.SUCCESS -> {
+                        viewModel.isLoading.postValue(false)
+                    }
+                    Status.ERROR -> {
+                        viewModel.isLoading.postValue(false)
+                        val errorData = resource.message ?: getString(R.string.msg_api_error_msg)
+                        Toast.makeText(mContext, errorData, Toast.LENGTH_SHORT).show()
+                    }
+                    Status.LOADING -> {
+                        viewModel.isLoading.postValue(true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun ledOff() {
+        viewModel.ledOff(ipAddress).observe(this) {
+            it?.let { resource ->
+                when (resource.status) {
+                    Status.SUCCESS -> {
+                        viewModel.isLoading.postValue(false)
+                    }
+                    Status.ERROR -> {
+                        viewModel.isLoading.postValue(false)
+                        val errorData = resource.message ?: getString(R.string.msg_api_error_msg)
+                        Toast.makeText(mContext, errorData, Toast.LENGTH_SHORT).show()
+                    }
+                    Status.LOADING -> {
+                        viewModel.isLoading.postValue(true)
+                    }
+                }
+            }
+        }
+    }
+
 }

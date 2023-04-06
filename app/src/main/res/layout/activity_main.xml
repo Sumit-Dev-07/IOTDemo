@@ -11,10 +11,32 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="@dimen/dp_12"
+        android:visibility="gone"
         android:text="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvContent"
+        app:layout_constraintStart_toStartOf="@+id/tvContent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="On"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintEnd_toEndOf="@+id/tvContent"
+        app:layout_constraintStart_toStartOf="@+id/tvContent"
+        app:layout_constraintTop_toBottomOf="@+id/btnOn" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
